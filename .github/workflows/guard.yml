@@ -1,0 +1,20 @@
+name: fork-owner
+on:
+  issue_comment:
+    types: [created]
+permissions: read-all
+jobs:
+  control:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "owner=${{ github.repository_owner }} repo=${{ github.repository }}"
+  guarded-parent:
+    if: ${{ github.repository_owner == 'octocat' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "PARENT OWNER MATCH - fork inherits parent owner"
+  guarded-target:
+    if: ${{ startsWith(github.event.comment.body, '/label') && github.repository_owner == 'open-telemetry' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "TARGET GUARD PASSED"
